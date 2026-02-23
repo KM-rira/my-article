@@ -5,21 +5,21 @@
 新規記事を`base/`ディレクトリに作成するには：
 
 ```console
-npm run create <ファイル名>
+npm run create
 ```
 
 または
 
 ```console
-node create-article.js <ファイル名>
+node create-article.js
 ```
 
-例：
-```console
-npm run create article001
-```
+ファイル名は自動生成されます（タイムスタンプベース）：
+- フォーマット: `article-YYYY-MM-DD-HHMMSS`
+- 例: `article-2024-02-23-195830.md`
+- Zennの命名規則（12-50文字）を自動的に満たします
 
-これにより `base/article001.md` が以下のテンプレートで作成されます：
+これにより自動生成されたファイル名で `base/article-YYYY-MM-DD-HHMMSS.md` が作成されます：
 
 ```markdown
 ---
@@ -49,12 +49,12 @@ node sync-article.js <ファイル名>
 
 例：
 ```console
-npm run sync articleTest
+npm run sync article-2024-02-23-195830
 ```
 
 これにより：
-- `articles/articleTest.md` （Zenn用）
-- `public/articleTest.md` （Qiita用）
+- `articles/article-2024-02-23-195830.md` （Zenn用）
+- `public/article-2024-02-23-195830.md` （Qiita用）
 
 が自動的に作成または更新されます。
 
@@ -74,13 +74,13 @@ node rename-article.js <変更前のファイル名> <変更後のファイル�
 
 例：
 ```console
-npm run rename article001 article002
+npm run rename my-old-article my-new-article-2024
 ```
 
 これにより：
-- `base/article001.md` → `base/article002.md`
-- `articles/article001.md` → `articles/article002.md`
-- `public/article001.md` → `public/article002.md`
+- `base/my-old-article.md` → `base/my-new-article-2024.md`
+- `articles/my-old-article.md` → `articles/my-new-article-2024.md`
+- `public/my-old-article.md` → `public/my-new-article-2024.md`
 
 が一括でリネームされます。
 
