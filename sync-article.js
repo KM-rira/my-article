@@ -185,9 +185,10 @@ const publicExists = fs.existsSync(publicFilePath);
 if (!publicExists) {
   console.log(`📝 public/${filenameWithExt} が存在しないため、新規作成します`);
   
-  // Qiita CLIで新規作成を試みる
+  // Qiita CLIで新規作成を試みる（.md拡張子なしで渡す）
   try {
-    execSync(`npx qiita new ${filenameWithExt}`, { 
+    const filenameWithoutExt = filenameWithExt.replace(/\.md$/, '');
+    execSync(`npx qiita new ${filenameWithoutExt}`, { 
       cwd: __dirname,
       stdio: 'pipe'
     });
