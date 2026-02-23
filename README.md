@@ -1,4 +1,129 @@
 # my-article
+
+## 新規記事の作成
+
+新規記事を`base/`ディレクトリに作成するには：
+
+```console
+npm run create <ファイル名>
+```
+
+または
+
+```console
+node create-article.js <ファイル名>
+```
+
+例：
+```console
+npm run create article001
+```
+
+これにより `base/article001.md` が以下のテンプレートで作成されます：
+
+```markdown
+---
+title: ""
+tags:
+  - 
+private: true
+---
+
+# 
+
+```
+
+## 両方に記事を投稿する（Zenn + Qiita同期）
+
+`base/` ディレクトリに記事を作成し、以下のコマンドで ZennとQiita の両方に同期できます：
+
+```console
+npm run sync <ファイル名>
+```
+
+または
+
+```console
+node sync-article.js <ファイル名>
+```
+
+例：
+```console
+npm run sync articleTest
+```
+
+これにより：
+- `articles/articleTest.md` （Zenn用）
+- `public/articleTest.md` （Qiita用）
+
+が自動的に作成または更新されます。
+
+## 記事のリネーム
+
+`base/`、`articles/`、`public/` の3つのディレクトリにある記事ファイルを一括でリネームできます：
+
+```console
+npm run rename <変更前のファイル名> <変更後のファイル名>
+```
+
+または
+
+```console
+node rename-article.js <変更前のファイル名> <変更後のファイル名>
+```
+
+例：
+```console
+npm run rename article001 article002
+```
+
+これにより：
+- `base/article001.md` → `base/article002.md`
+- `articles/article001.md` → `articles/article002.md`
+- `public/article001.md` → `public/article002.md`
+
+が一括でリネームされます。
+
+### base/ディレクトリの記事フォーマット
+
+```markdown
+---
+title: "記事のタイトル"
+tags:
+  - Go
+  - GitHub
+  - CI
+private: true
+---
+
+# 記事の本文
+
+内容...
+```
+
+### フィールドの対応関係
+
+#### 共通フィールド
+- `title`: 記事タイトル（Zenn、Qiita両方で使用）
+- 本文: Markdown形式の内容（そのまま両方に反映）
+
+#### 変換されるフィールド
+| base | Zenn | Qiita | 説明 |
+|------|------|-------|------|
+| `tags` | `topics` | `tags` | タグ/トピック（配列） |
+| `tags: [Go, GitHub]` | `topics: ["go", "github"]` | `tags: [Go, GitHub]` | **Zennは小文字化＋引用符付き、Qiitaは大文字小文字そのまま** |
+| `private: true` | `published: false` | `private: true` | 非公開設定 |
+| `private: false` | `published: true` | `private: false` | 公開設定 |
+
+#### Zenn固有のフィールド（自動追加）
+- `emoji`: baseにない場合は "📝" がデフォルト
+- `type`: baseにない場合は "tech" がデフォルト
+
+#### Qiita固有のフィールド（自動追加）
+- `updated_at`, `id`, `organization_url_name`, `slide`, `ignorePublish`
+
+---
+
 ## zenn
   👇  新しい記事を作成する
   $ npx zenn new:article
