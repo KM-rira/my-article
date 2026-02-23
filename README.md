@@ -1,5 +1,9 @@
 # my-article
 
+やるのはこれだけ
+npm run create
+npm run sync filename
+
 ## 新規記事の作成
 
 新規記事を`base/`ディレクトリに作成するには：
@@ -27,11 +31,11 @@ node create
 ---
 title: ""
 tags:
-  - 
+  -
 private: false
 ---
 
-# 
+#
 
 ```
 
