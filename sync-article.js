@@ -16,6 +16,17 @@ if (!filename) {
 
 // .md拡張子がなければ追加
 const filenameWithExt = filename.endsWith('.md') ? filename : `${filename}.md`;
+const slug = filenameWithExt.replace(/\.md$/, '');
+
+// Zennのslugバリデーション（12〜50文字、半角英数字・ハイフン・アンダースコアのみ）
+if (!/^[a-z0-9_-]{12,50}$/.test(slug)) {
+  console.error('エラー: ファイル名が不正です');
+  console.error('Zennのslug要件:');
+  console.error('  - 半角英数字（a-z0-9）、ハイフン（-）、アンダースコア（_）のみ');
+  console.error('  - 12〜50文字');
+  console.error(`現在のファイル名: ${slug} (${slug.length}文字)`);
+  process.exit(1);
+}
 
 // 各ディレクトリのパス
 const baseDir = path.join(__dirname, 'base');
@@ -114,7 +125,10 @@ function generateZennFrontmatter(data) {
   }
   
   // publishedはbaseのprivateの逆
-  const published = data.private === 'true' || data.private === true ? false : true;
+  // private: true または "true" → published: false
+  // private: false または "false" または 未定義 → published: true
+  const isPrivate = data.private === true || data.private === 'true';
+  const published = !isPrivate;
   frontmatter += `published: ${published}\n`;
   
   frontmatter += '---';

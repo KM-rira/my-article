@@ -3,18 +3,22 @@
 const fs = require('fs');
 const path = require('path');
 
-// コマンドライン引数からファイル名を取得
-const filename = process.argv[2];
-
-if (!filename) {
-  console.error('エラー: ファイル名を指定してください');
-  console.log('使用方法: node create-article.js <ファイル名>');
-  console.log('例: node create-article.js article001');
-  process.exit(1);
+// タイムスタンプベースでファイル名を自動生成
+function generateFilename() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  const seconds = String(now.getSeconds()).padStart(2, '0');
+  
+  // フォーマット: article-YYYY-MM-DD-HHMMSS (24文字)
+  return `article-${year}-${month}-${day}-${hours}${minutes}${seconds}`;
 }
 
-// .md拡張子がなければ追加
-const filenameWithExt = filename.endsWith('.md') ? filename : `${filename}.md`;
+const filename = generateFilename();
+const filenameWithExt = `${filename}.md`;
 
 // baseディレクトリのパス
 const baseDir = path.join(__dirname, 'base');
@@ -47,6 +51,11 @@ private: true
 try {
   fs.writeFileSync(filePath, template, 'utf8');
   console.log(`✅ ファイルを作成しました: ${filePath}`);
+  console.log(`📝 ファイル名: ${filename}`);
+  console.log('');
+  console.log('次のステップ:');
+  console.log(`1. base/${filenameWithExt} を編集して記事を書く`);
+  console.log(`2. npm run sync ${filename} で同期する`);
 } catch (error) {
   console.error(`エラー: ファイルの作成に失敗しました: ${error.message}`);
   process.exit(1);

@@ -17,6 +17,17 @@ if (!beforeName || !afterName) {
 // .md拡張子がなければ追加
 const beforeNameWithExt = beforeName.endsWith('.md') ? beforeName : `${beforeName}.md`;
 const afterNameWithExt = afterName.endsWith('.md') ? afterName : `${afterName}.md`;
+const afterSlug = afterNameWithExt.replace(/\.md$/, '');
+
+// Zennのslugバリデーション（12〜50文字、半角英数字・ハイフン・アンダースコアのみ）
+if (!/^[a-z0-9_-]{12,50}$/.test(afterSlug)) {
+  console.error('エラー: 変更後のファイル名が不正です');
+  console.error('Zennのslug要件:');
+  console.error('  - 半角英数字（a-z0-9）、ハイフン（-）、アンダースコア（_）のみ');
+  console.error('  - 12〜50文字');
+  console.error(`指定されたファイル名: ${afterSlug} (${afterSlug.length}文字)`);
+  process.exit(1);
+}
 
 // 各ディレクトリのパス
 const directories = ['base', 'articles', 'public'];
