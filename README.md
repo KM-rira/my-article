@@ -26,7 +26,7 @@ node create-article.js
 title: ""
 tags:
   - 
-private: true
+private: false
 ---
 
 # 

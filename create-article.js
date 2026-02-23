@@ -40,7 +40,7 @@ const template = `---
 title: ""
 tags:
   - 
-private: true
+private: false
 ---
 
 # 
