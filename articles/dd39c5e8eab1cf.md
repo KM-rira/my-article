@@ -1,10 +1,12 @@
 ---
 title: "title"
 emoji: "💬"
-type: "tech" # tech: 技術記事 / idea: アイデア
+type: "tech"
 topics: []
 published: true
+published_at: "2026-02-23 18:32"
 ---
+
 test test
 article
 
