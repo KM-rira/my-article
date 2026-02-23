@@ -59,10 +59,11 @@ node sync article-2024-02-23-195830
 ```
 
 これにより：
-- `articles/article-2024-02-23-195830.md` （Zenn用）
-- `public/article-2024-02-23-195830.md` （Qiita用）
+- `articles/my-first-article.md` （Zenn用）が作成・更新
+- `public/my-first-article.md` （Qiita用）が作成・更新
+- **Qiitaに自動公開** (`npx qiita publish`が自動実行)
 
-が自動的に作成または更新されます。
+が自動的に実行されます。
 
 ## 記事のリネーム
 

@@ -18,16 +18,6 @@ if (!filename) {
 const filenameWithExt = filename.endsWith('.md') ? filename : `${filename}.md`;
 const slug = filenameWithExt.replace(/\.md$/, '');
 
-// Zennのslugバリデーション（12〜50文字、半角英数字・ハイフン・アンダースコアのみ）
-if (!/^[a-z0-9_-]{12,50}$/.test(slug)) {
-  console.error('エラー: ファイル名が不正です');
-  console.error('Zennのslug要件:');
-  console.error('  - 半角英数字（a-z0-9）、ハイフン（-）、アンダースコア（_）のみ');
-  console.error('  - 12〜50文字');
-  console.error(`現在のファイル名: ${slug} (${slug.length}文字)`);
-  process.exit(1);
-}
-
 // 各ディレクトリのパス
 const baseDir = path.join(__dirname, 'base');
 const articlesDir = path.join(__dirname, 'articles');
@@ -36,6 +26,21 @@ const publicDir = path.join(__dirname, 'public');
 const baseFilePath = path.join(baseDir, filenameWithExt);
 const articlesFilePath = path.join(articlesDir, filenameWithExt);
 const publicFilePath = path.join(publicDir, filenameWithExt);
+
+// Zennのslugバリデーション（12〜50文字、半角英数字・ハイフン・アンダースコアのみ）
+// ただし、既存ファイル（articlesまたはpublicに存在）の場合はスキップ
+const articlesExists = fs.existsSync(articlesFilePath);
+const publicExists = fs.existsSync(publicFilePath);
+
+if (!articlesExists && !publicExists && !/^[a-z0-9_-]{12,50}$/.test(slug)) {
+  console.error('エラー: ファイル名が不正です');
+  console.error('Zennのslug要件:');
+  console.error('  - 半角英数字（a-z0-9）、ハイフン（-）、アンダースコア（_）のみ');
+  console.error('  - 12〜50文字');
+  console.error(`現在のファイル名: ${slug} (${slug.length}文字)`);
+  console.error('\n💡 ヒント: 新規記事は npm run create で自動生成されるファイル名を使用してください');
+  process.exit(1);
+}
 
 // baseディレクトリにファイルが存在するか確認
 if (!fs.existsSync(baseFilePath)) {
@@ -136,7 +141,7 @@ function generateZennFrontmatter(data) {
 }
 
 // Qiita用のフロントマターを生成
-function generateQiitaFrontmatter(data) {
+function generateQiitaFrontmatter(data, existingData = {}) {
   let frontmatter = '---\n';
   
   if (data.title) {
@@ -156,9 +161,12 @@ function generateQiitaFrontmatter(data) {
   const isPrivate = data.private === 'true' || data.private === true;
   frontmatter += `private: ${isPrivate}\n`;
   
-  // Qiita固有のフィールド
-  frontmatter += `updated_at: ''\n`;
-  frontmatter += `id: null\n`;
+  // Qiita固有のフィールド（既存の値を保持）
+  const updatedAt = existingData.updated_at || '';
+  const id = existingData.id || null;
+  
+  frontmatter += `updated_at: '${updatedAt}'\n`;
+  frontmatter += `id: ${id}\n`;
   frontmatter += `organization_url_name: null\n`;
   frontmatter += `slide: false\n`;
   frontmatter += `ignorePublish: false\n`;
@@ -168,7 +176,7 @@ function generateQiitaFrontmatter(data) {
 }
 
 // articlesディレクトリの処理（Zenn）
-const articlesExists = fs.existsSync(articlesFilePath);
+// articlesExists は既に上で定義済み
 if (!articlesExists) {
   console.log(`📝 articles/${filenameWithExt} が存在しないため、新規作成します`);
   
@@ -195,7 +203,9 @@ fs.writeFileSync(articlesFilePath, zennContent, 'utf8');
 console.log(`✅ articles/${filenameWithExt} を同期しました`);
 
 // publicディレクトリの処理（Qiita）
-const publicExists = fs.existsSync(publicFilePath);
+// publicExists は既に上で定義済み
+let existingQiitaData = {};
+
 if (!publicExists) {
   console.log(`📝 public/${filenameWithExt} が存在しないため、新規作成します`);
   
@@ -207,6 +217,17 @@ if (!publicExists) {
       stdio: 'pipe'
     });
     console.log(`✅ Qiita CLIで public/${filenameWithExt} を作成しました`);
+    
+    // Qiita CLIが作成したファイルから updated_at と id を読み取る
+    if (fs.existsSync(publicFilePath)) {
+      const createdContent = fs.readFileSync(publicFilePath, 'utf8');
+      const createdMatch = createdContent.match(/^---\n([\s\S]*?)\n---/);
+      if (createdMatch) {
+        const createdFrontmatter = parseFrontmatter(createdMatch[1]);
+        existingQiitaData.updated_at = createdFrontmatter.updated_at || '';
+        existingQiitaData.id = createdFrontmatter.id || null;
+      }
+    }
   } catch (error) {
     console.error('警告: Qiita CLIでの作成に失敗しました。手動で作成します');
     // ディレクトリが存在しない場合は作成
@@ -214,11 +235,34 @@ if (!publicExists) {
       fs.mkdirSync(publicDir, { recursive: true });
     }
   }
+} else {
+  // 既存ファイルから updated_at と id を保持
+  const existingContent = fs.readFileSync(publicFilePath, 'utf8');
+  const existingMatch = existingContent.match(/^---\n([\s\S]*?)\n---/);
+  if (existingMatch) {
+    const existingFrontmatter = parseFrontmatter(existingMatch[1]);
+    existingQiitaData.updated_at = existingFrontmatter.updated_at || '';
+    existingQiitaData.id = existingFrontmatter.id || null;
+  }
 }
 
-// Qiita記事を同期
-const qiitaContent = generateQiitaFrontmatter(baseData) + '\n' + body;
+// Qiita記事を同期（updated_at と id を保持）
+const qiitaContent = generateQiitaFrontmatter(baseData, existingQiitaData) + '\n' + body;
 fs.writeFileSync(publicFilePath, qiitaContent, 'utf8');
 console.log(`✅ public/${filenameWithExt} を同期しました`);
 
 console.log('\n🎉 同期が完了しました！');
+
+// Qiitaに自動公開
+console.log('\n📤 Qiitaに公開しています...');
+try {
+  const filenameWithoutExt = filenameWithExt.replace(/\.md$/, '');
+  execSync(`npx qiita publish ${filenameWithoutExt}`, { 
+    cwd: __dirname,
+    stdio: 'inherit' // 出力を表示
+  });
+  console.log(`✅ Qiitaに公開しました: public/${filenameWithExt}`);
+} catch (error) {
+  console.error('⚠️  Qiitaへの公開に失敗しました');
+  console.error('手動で公開してください: npx qiita publish ' + filenameWithExt.replace(/\.md$/, ''));
+}
