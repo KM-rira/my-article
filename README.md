@@ -12,6 +12,8 @@ npm run create
 
 ```console
 node create-article.js
+# 短いコマンド
+node create
 ```
 
 ファイル名は自動生成されます（タイムスタンプベース）：
@@ -45,11 +47,15 @@ npm run sync <ファイル名>
 
 ```console
 node sync-article.js <ファイル名>
+# 短いコマンド
+node sync <ファイル名>
 ```
 
 例：
 ```console
 npm run sync article-2024-02-23-195830
+# または
+node sync article-2024-02-23-195830
 ```
 
 これにより：
@@ -70,11 +76,15 @@ npm run rename <変更前のファイル名> <変更後のファイル名>
 
 ```console
 node rename-article.js <変更前のファイル名> <変更後のファイル名>
+# 短いコマンド
+node rename <変更前のファイル名> <変更後のファイル名>
 ```
 
 例：
 ```console
 npm run rename my-old-article my-new-article-2024
+# または
+node rename my-old-article my-new-article-2024
 ```
 
 これにより：
