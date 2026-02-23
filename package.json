@@ -20,5 +20,8 @@
   "homepage": "https://github.com/KM-rira/my-article#readme",
   "dependencies": {
     "zenn-cli": "^0.4.5"
+  },
+  "devDependencies": {
+    "@qiita/qiita-cli": "^1.7.0"
   }
 }
