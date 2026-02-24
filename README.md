@@ -140,6 +140,7 @@ private: true
 ---
 
 ## zenn
+## command
   👇  新しい記事を作成する
   $ npx zenn new:article
 
@@ -148,6 +149,11 @@ private: true
 
   👇  投稿をプレビューする
   $ npx zenn preview
+
+## 正しい指定方法
+
+![](/images/example-image1.png)
+![](/images/example-article-1/image1.png)
 
 ---
 
