@@ -4,7 +4,7 @@ tags:
   - AI
   - cursor
 private: false
-updated_at: '2026-02-25T01:05:10+09:00'
+updated_at: '2026-02-25T19:31:45+09:00'
 id: 37ebbfa5bdbd9f24ac26
 organization_url_name: null
 slide: false
@@ -72,7 +72,7 @@ touch '/.cursor/rules/personal-fmt.mdc'
 ```text:personal-fmt.mdc
 ---
 description: "gofmt rules for go files"
-alwaysApply: true
+alwaysApply: false
 ---
 このファイルを読み込んだら、「ruleを読み込みました！」と出力してください。
 gofmt -s -w . を実行し、フォーマットをしてください
@@ -106,8 +106,7 @@ main.goをhello cursorと出力するように編集してください。
 
 動作しますでしょうか？
 
-![Screenshot from 2026-02-25 00-40-22.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/3830923/d8b4a294-1aef-4470-8ff0-175117483786.png)
-
+![](/images/cursor1.png)
 
 ちゃんと`ruleを読みました！`, `フォーマット完了！`と出力されていますね！
 
