@@ -4,7 +4,7 @@ tags:
   - AI
   - cursor
 private: false
-updated_at: '2026-02-25T19:31:45+09:00'
+updated_at: '2026-02-25T19:37:00+09:00'
 id: 37ebbfa5bdbd9f24ac26
 organization_url_name: null
 slide: false
@@ -72,7 +72,7 @@ touch '/.cursor/rules/personal-fmt.mdc'
 ```text:personal-fmt.mdc
 ---
 description: "gofmt rules for go files"
-alwaysApply: false
+alwaysApply: true
 ---
 このファイルを読み込んだら、「ruleを読み込みました！」と出力してください。
 gofmt -s -w . を実行し、フォーマットをしてください
